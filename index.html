@@ -44,34 +44,48 @@
 
   <!-- JavaScript to fetch and display news articles -->
   <script>
-    // Your API key for NewsAPI
-    const apiKey = 'd416ecf4f56d40618dfe5610b3d8d5a1';
-    // Construct the API URL
-    const url = `https://newsapi.org/v2/top-headlines?country=us&category=science&apiKey=${apiKey}`;
+  // Your API key for NewsAPI
+  const apiKey = 'd416ecf4f56d40618dfe5610b3d8d5a1';
+  // Construct the API URL
+  const url = `https://newsapi.org/v2/top-headlines?country=us&category=science&apiKey=${apiKey}`;
 
-    // Fetch news data
-    fetch(url)
-      .then(response => response.json()) // Parse the JSON from the response
-      .then(data => {
-        const articles = data.articles; // Extract articles array from the data
-        let newsContainer = document.getElementById('news-container'); // Get the container element
+  // Fetch news data
+  fetch(url)
+    .then(response => {
+      // Check if response is ok (status code 200-299)
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+      if (!data.articles || data.articles.length === 0) {
+        throw new Error('No articles found or data format is incorrect');
+      }
+      
+      const articles = data.articles; // Extract articles array from the data
+      let newsContainer = document.getElementById('news-container'); // Get the container element
 
-        // Loop through each article and create HTML structure
-        articles.forEach(article => {
-          let newsArticle = `
-            <article class="bg-white p-6 shadow-md rounded-lg">
-              <img src="${article.urlToImage}" alt="News Image" class="rounded mb-4">
-              <h3 class="text-2xl font-bold mb-2">${article.title}</h3>
-              <p class="mb-4">${article.description}</p>
-              <a href="${article.url}" class="text-blue-500 hover:underline">Read More</a>
-            </article>
-          `;
-          // Append the news article HTML to the news container
-          newsContainer.innerHTML += newsArticle;
-        });
-      })
-      .catch(error => console.error('Error fetching news:', error)); // Log any errors to the console
-  </script>
+      // Loop through each article and create HTML structure
+      articles.forEach(article => {
+        let newsArticle = `
+          <article class="bg-white p-6 shadow-md rounded-lg">
+            <img src="${article.urlToImage}" alt="News Image" class="rounded mb-4">
+            <h3 class="text-2xl font-bold mb-2">${article.title}</h3>
+            <p class="mb-4">${article.description}</p>
+            <a href="${article.url}" class="text-blue-500 hover:underline">Read More</a>
+          </article>
+        `;
+        // Append the news article HTML to the news container
+        newsContainer.innerHTML += newsArticle;
+      });
+    })
+    .catch(error => {
+      console.error('Error fetching news:', error);
+      let newsContainer = document.getElementById('news-container');
+      newsContainer.innerHTML = `<p class="text-red-500">Failed to load news articles. Please try again later.</p>`;
+    });
+</script>
 
 </body>
 </html>
