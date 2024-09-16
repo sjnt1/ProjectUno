@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>Global News & Science Breakthroughs</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+  <!-- Navigation Bar -->
+  <nav class="bg-blue-900 text-white p-4">
+    <div class="container mx-auto flex justify-between">
+      <a href="#" class="text-2xl font-bold">Global News</a>
+      <ul class="flex space-x-6">
+        <li><a href="world-news.html" class="hover:underline">World News</a></li>
+        <li><a href="science-news.html" class="hover:underline">Science</a></li>
+        <li><a href="#" class="hover:underline">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="bg-gray-900 text-white py-20">
+    <div class="container mx-auto text-center">
+      <h1 class="text-5xl font-bold mb-4">Breaking News: Science & Global Events</h1>
+      <p class="text-lg mb-8">Stay updated with the latest from around the world.</p>
+      <a href="#news" class="bg-blue-500 px-6 py-3 rounded text-lg hover:bg-blue-700">Discover Latest News</a>
+    </div>
+  </section>
+
+  <!-- News Articles Section -->
+  <section id="news" class="container mx-auto py-12">
+    <h2 class="text-4xl font-semibold mb-8 text-center">Latest News</h2>
+    <!-- Container for dynamic news articles -->
+    <div id="news-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white text-center py-6">
+    <p>&copy; 2024 Global News & Science Breakthroughs. All rights reserved.</p>
+  </footer>
+
+  <!-- JavaScript to fetch and display news articles -->
+  <script>
+    // Your API key for NewsAPI
+    const apiKey = 'd416ecf4f56d40618dfe5610b3d8d5a1';
+    // Construct the API URL
+    const url = `https://newsapi.org/v2/top-headlines?country=us&category=science&apiKey=${apiKey}`;
+
+    // Fetch news data
+    fetch(url)
+      .then(response => response.json()) // Parse the JSON from the response
+      .then(data => {
+        const articles = data.articles; // Extract articles array from the data
+        let newsContainer = document.getElementById('news-container'); // Get the container element
+
+        // Loop through each article and create HTML structure
+        articles.forEach(article => {
+          let newsArticle = `
+            <article class="bg-white p-6 shadow-md rounded-lg">
+              <img src="${article.urlToImage}" alt="News Image" class="rounded mb-4">
+              <h3 class="text-2xl font-bold mb-2">${article.title}</h3>
+              <p class="mb-4">${article.description}</p>
+              <a href="${article.url}" class="text-blue-500 hover:underline">Read More</a>
+            </article>
+          `;
+          // Append the news article HTML to the news container
+          newsContainer.innerHTML += newsArticle;
+        });
+      })
+      .catch(error => console.error('Error fetching news:', error)); // Log any errors to the console
+  </script>
+
+</body>
+</html>
